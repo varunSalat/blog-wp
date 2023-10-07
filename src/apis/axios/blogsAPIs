@@ -1,0 +1,12 @@
+import axios from "axios";
+
+const baseURL = "https://scholarwithtech.com/admin";
+
+const listingAPI = axios.create({
+  baseURL,
+  headers: {
+    Accept: "application/json",
+  },
+});
+
+export { listingAPI };
