@@ -1,11 +1,11 @@
 import { List, Pagination, SideBlog, MostViewedCard } from "../components";
 import { useSearchParams } from "react-router-dom";
-import Loader from "../layouts/Loader";
 import NoBlogFound from "../layouts/NoBlogFound";
 import { useEffect } from "react";
 import { listingAPI } from "../apis/axios/blogsAPIs";
 import { useState } from "react";
 import { categoryRe, tag } from "../constants/constant";
+import { ListingLoader } from "../layouts";
 
 const Listing = () => {
   // HOOKS
@@ -66,14 +66,11 @@ const Listing = () => {
     });
   }, [searchParams]);
 
-  // FETCHING DATA
-  // const totalBlogs = res?.data?.totalCount;
-
   useEffect(() => {
     document.title = "Scholarwithtech | blog website | Information blog";
   }, []);
   if (isLoading) {
-    return <Loader />;
+    return <ListingLoader />;
   }
   return (
     <>
@@ -84,7 +81,7 @@ const Listing = () => {
             <span className="my-2 block text-2xl font-semibold">Articles </span>
             <div className="border-b-2 border-black/10" />
           </div>
-          {data === null ? (
+          {data === null || data.data.length === 0 ? (
             <NoBlogFound />
           ) : (
             data.data.map((blogData) => (
@@ -99,7 +96,7 @@ const Listing = () => {
             ))
           )}
           <div className="flex justify-end">
-            <Pagination totalBlogs={totalPage.data.length} />
+            <Pagination totalBlogs={totalPage?.data?.length} />
           </div>
         </section>
         <div className="hidden xl:flex md:col-span-2 flex-col gap-2 w-full padding">

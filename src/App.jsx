@@ -1,46 +1,80 @@
-import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Footer, Navbar } from "./components";
-import { Listing, Article } from "./pages";
-import ScrollToTopButton from "./components/ScrollTopBtn";
-import TermsCondition from "./pages/TermsCondition";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+import { lazy } from "react";
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
+import { Suspense } from "react";
+import { Loader } from "./layouts";
+import { Navbar } from "./components";
+const Article = lazy(() => import("./pages/Article"));
+import { Listing } from "./pages/";
+const TermsCondition = lazy(() => import("./pages/TermsCondition"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 
-// outlet setup
+// const router = createBrowserRouter([
+//   {
+//     basename: "/",
+//     path: "/",
+//     element: Layout,
+//     children: [
+//       {
+//         path: "/",
+//         element: <Listing />,
+//       },
+//       {
+//         path: "/a/:blogUrl",
+//         element: <Article />,
+//       },
+//       {
+//         path: "/term-condition",
+//         element: <TermsCondition />,
+//       },
+//       {
+//         path: "/privacy-policy",
+//         element: <PrivacyPolicy />,
+//       },
+//       {
+//         path: "/test",
+//         element: <ListingLoader />,
+//       },
+//     ],
+//   },
+// ]);
 
-const Layout = (
-  <main>
-    <Navbar />
-    <ScrollToTopButton />
-    <Outlet />
-    <Footer />
-  </main>
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<Navbar />}>
+      <Route index element={<Listing />} />
+
+      <Route
+        path="/a/:blogUrl"
+        element={
+          <Suspense fallback={<Loader />}>
+            <Article />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/term-condition"
+        element={
+          <Suspense fallback={<Loader />}>
+            <TermsCondition />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/privacy-policy"
+        element={
+          <Suspense fallback={<Loader />}>
+            <PrivacyPolicy />
+          </Suspense>
+        }
+      />
+    </Route>
+  )
 );
-
-const router = createBrowserRouter([
-  {
-    basename: "/",
-    path: "/",
-    element: Layout,
-    children: [
-      {
-        path: "/",
-        element: <Listing />,
-      },
-      {
-        path: "/a/:blogUrl",
-        element: <Article />,
-      },
-      {
-        path: "/term-condition",
-        element: <TermsCondition />,
-      },
-      {
-        path: "/privacy-policy",
-        element: <PrivacyPolicy />,
-      },
-    ],
-  },
-]);
 
 function App() {
   return <RouterProvider router={router} />;

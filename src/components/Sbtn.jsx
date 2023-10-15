@@ -4,13 +4,16 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const Sbtn = ({ title, setNavOpen }) => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const router = useNavigate();
   const category = searchParams.get("cat");
-
   const handleClick = useCallback(() => {
     let q = {};
-
+    if (category === title.toLowerCase()) {
+      searchParams.delete("cat");
+      setSearchParams(searchParams);
+      return false;
+    }
     if (searchParams) {
       q = qs.parse(searchParams.toString());
     }
@@ -42,7 +45,7 @@ const Sbtn = ({ title, setNavOpen }) => {
         setNavOpen(false);
       }}
       className={`px-6 py-2 ${
-        title === category ? "bg-black text-white" : "bg-gray-100"
+        title.toLowerCase() === category ? "bg-black text-white" : "bg-gray-100"
       } text-base text-md font-semibold rounded-full cursor-pointer transition-all duration-300 hover:bg-black hover:text-white `}
     >
       <span>{title}</span>
